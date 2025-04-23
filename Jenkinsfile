@@ -15,7 +15,7 @@ pipeline {
 
     stages {
 
-        stage('Test') {
+        stage('Test2') {
             agent {
                 docker {
                     image 'socksshop/aws-cli-git-kubectl-helm:latest'
