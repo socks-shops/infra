@@ -2,7 +2,7 @@ pipeline {
     environment {
         DOCKER_ID = "socksshop"
         DOCKER_IMAGE = "front-end"
-        DOCKER_TAG = "v.${BUILD_ID}.0"
+        // DOCKER_TAG = "v.${BUILD_ID}.0"
         // DOCKER_TAG = "latest"
         AWS_REGION = 'us-east-1'
         CLUSTER_NAME = 'sockshop-EKS-VPC'
