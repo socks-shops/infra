@@ -1,38 +1,69 @@
 pipeline {
-    environment {
-        DOCKER_ID = "socksshop"
-        DOCKER_IMAGE = "front-end"
-        // DOCKER_TAG = "v.${BUILD_ID}.0"
-        // DOCKER_TAG = "latest"
-        AWS_REGION = 'us-east-1'
-        CLUSTER_NAME = 'sockshop-EKS-VPC'
-        CHART_NAME = 'helm-charts/frontend/'
-        NAMESPACE = 'dev'
-        RELEASE_NAME = 'socksshop-frontend'
+    agent {
+        docker { image 'jenkins/jnlp-agent-terraform'}
     }
-
-    agent any
-
     stages {
 
-        stage('Test2') {
-            agent {
-                docker {
-                    image 'socksshop/aws-cli-git-kubectl-helm:latest'
-                    args '-u root -v $HOME/.kube:/root/.kube'
-                }
-            }
+        stage('Init') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-                    sh '''
-                    echo "testing"
-                    aws sts get-caller-identity
-                    '''
+                script {
+                    sh """
+                    terraform init
+                    """
                 }
             }
         }
 
+        stage('Validate') {
+            steps {
+                script {
+                    sh """
+                    terraform validate
+                    """
+                }
+            }
+        }
 
+        stage('Format') {
+            steps {
+                script {
+                    sh """
+                    terraform fmt
+                    """
+                }
+            }
+        }
+
+        stage('Plan') {
+            steps {
+                script {
+                    sh """
+                    terraform plan
+                    """
+                }
+            }
+        }
+
+        // stage('Apply') {
+        //     steps {
+        //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //             sh """
+        //             terraform apply --auto-approve
+        //             """
+        //         }
+        //     }
+        // }
+
+        // stage('Destroy') {
+        //     steps {
+        //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //             input message: 'Lancer le destroy?', ok: 'Oui'
+        //             sh """
+        //             terraform destroy --auto-approve
+        //             """
+        //         }
+        //     }
+        // }
 
     }
 }
