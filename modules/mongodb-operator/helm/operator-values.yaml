@@ -1,0 +1,10 @@
+crd:
+  create: true
+
+# Désactive la création de cluster DB (Pas besoin ici, on utilise des CRD pour carts, orders et user)
+psmdb:
+  enabled: false
+
+operator:
+  createNamespace: true
+  namespace: mongodb

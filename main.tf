@@ -9,12 +9,12 @@ provider "kubernetes" {
 
 }
 
-# Création d'une ressource pour obtenir un token d'authentification pour le cluster EKS
+# Create a resource to obtain an authentication token for the EKS cluster
 data "aws_eks_cluster_auth" "auth" {
   name = module.eks.cluster_name
 }
 
-# Provider Helm pour gérer l'installation du chart AWS Load Balancer Controller
+# Helm provider to manage installation of the AWS Load Balancer Controller
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
@@ -31,7 +31,7 @@ terraform {
   }
 }
 
-# Définir les variables locales, y compris le nom et le chemin de la clé
+# Define local variables including key name and path
 locals {
   key_name = "sockshop-keypair"                # Nom de la clé SSH à créer
   key_path = "./keypair/${local.key_name}.pem" # Chemin pour sauvegarder la clé privée
@@ -72,54 +72,12 @@ module "eks" {
   eks_sg                        = module.securitygroup.eks_sg_id
 }
 
-
-
-# module "documentdb" {
-#   source                  = "./modules/documentdb"
-#   vpc_id                  = module.network.vpc_id
-#   vpc_cidr                = var.vpc_cidr
-#   private_subnet_ids      = module.network.private_subnet_ids
-#   cluster_identifier      = var.docdb_cluster_id
-#   backup_retention_period = var.backup_docdb_period
-#   preferred_backup_window = var.backup_time_window
-#   instance_class          = var.docdb_instance_class
-#   instance_count          = var.nbr_instance_docdb
-#   docdb_sg                = [module.securitygroup.docdb_sg_id]
-# }
-
-# module "rds" {
-#   source                  = "./modules/rds"
-#   vpc_id                  = module.network.vpc_id
-#   rds_sg_id               = module.securitygroup.rds_sg_id
-#   private_subnet_ids      = module.network.private_subnet_ids
-#   backup_retention_period = var.backup_rds_period
-# }
-
 module "securitygroup" {
   source   = "./modules/securitygroup"
   vpc_id   = module.network.vpc_id
   vpc_cidr = var.vpc_cidr
   cidr_all = var.cidr_all
 }
-
-
-# module "alb" {
-#   source             = "./modules/alb"
-#   alb_name           = var.alb_name
-#   alb_security_group = module.securitygroup.alb_sg_id
-#   public_subnets     = module.network.public_subnet_ids
-#   vpc_id             = module.network.vpc_id
-#   certificate_arn    = var.certificate_arn
-# }
-
-
-# module "route53" {
-#   source         = "./modules/route53"
-#   domain_name    = var.domain_name
-#   subdomain_name = var.subdomain_name
-#   alb_dns_name   = module.alb.alb_dns_name
-#   alb_zone_id    = module.alb.alb_zone_id
-# }
 
 module "eks_serviceaccount_role" {
   source               = "./modules/eks_serviceaccount_role"
@@ -133,7 +91,6 @@ module "eks_serviceaccount_role" {
   eks_token            = data.aws_eks_cluster_auth.auth.token
   depends_on           = [module.eks]
 }
-
 
 
 # Module KeyPair
@@ -156,10 +113,16 @@ output "OIDC" {
   value = module.eks.oidc_provider_arn
 }
 
-# output "alb_dns_name" {
-#   value = module.alb.alb_dns_name
-# }
 
-# output "alb_z_id" {
-#   value = module.alb.alb_zone_id
-# }
+
+#################################################
+################### OPERATORS ###################
+#################################################
+
+################ MONGODB OPERATORS ##############
+
+module "mongodb_operator" {
+  source = "./mongodb-operator"
+
+  depends_on = [module.eks]
+}
