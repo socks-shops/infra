@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    terraform fmt
+                    terraform fmt -recursive
                     """
                 }
             }

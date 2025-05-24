@@ -1,0 +1,29 @@
+nameOverride: catalogue-db
+
+pxc:
+  clusterName: catalogue-db
+  size: 1
+  image:
+    repository: weaveworksdemos/catalogue-db
+    tag: 0.3.0
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1000Mi
+    requests:
+      cpu: 100m
+      memory: 300Mi
+  volumeSpec:
+    persistentVolumeClaim:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: gp2
+  mysqlRootPassword: "root_secret_here"
+  mysqlUser: "catalogue_user"
+  mysqlPassword: "catalogue_password_here"
+  mysqlDatabase: "socksdb"
+
+service:
+  type: ClusterIP
