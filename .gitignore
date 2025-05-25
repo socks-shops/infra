@@ -1,5 +1,7 @@
 # Fichiers/dossiers Terraform
 .terraform/
+infrastructure/.terraform/
+cluster-config/.terraform/
 *.tfstate
 *.tfstate.backup
 *.tfvars
