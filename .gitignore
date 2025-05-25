@@ -1,1 +1,24 @@
-./infrastructure/keypair/sockshop-keypair.pem
+# Fichiers/dossiers Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+crash.log
+*.log
+
+# Fichiers sensibles
+*.pem
+
+# Exemple : clé SSH dans ton projet
+infrastructure/keypair/sockshop-keypair.pem
+
+# Fichiers de sortie ou artefacts temporaires
+*.out
+
+# MacOS / OS spécifiques
+.DS_Store
+
+# VSCode ou autres éditeurs
+.vscode/
+.idea/
+*.swp
