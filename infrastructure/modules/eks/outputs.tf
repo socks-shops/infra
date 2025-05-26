@@ -20,3 +20,8 @@ output "cluster_auth" {
 output "aws_lb_controller_role_arn" {
   value = aws_iam_role.aws_lb_controller.arn
 }
+
+output "cluster_token" {
+  value     = data.aws_eks_cluster_auth.cluster.token
+  sensitive = true
+}

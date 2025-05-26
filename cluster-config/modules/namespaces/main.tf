@@ -19,27 +19,6 @@ resource "kubernetes_namespace" "prod" {
   }
 }
 
-# Create "mongodb" namespace
-resource "kubernetes_namespace" "mongodb" {
-  metadata {
-    name = "mongodb"
-  }
-}
-
-# Create "mysql" namespace
-resource "kubernetes_namespace" "mysql" {
-  metadata {
-    name = "mysql"
-  }
-}
-
-# Create "redis" namespace
-resource "kubernetes_namespace" "redis" {
-  metadata {
-    name = "redis"
-  }
-}
-
 # Create "velero" namespace
 resource "kubernetes_namespace" "velero" {
   metadata {

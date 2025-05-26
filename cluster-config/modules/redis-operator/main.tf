@@ -15,8 +15,13 @@ resource "helm_release" "redis_operator" {
   repository = "https://ot-container-kit.github.io/helm-charts/"
   chart      = "redis-operator"
   version    = var.redis-operator-version
-
-  namespace = var.namespace
+  namespace  = var.namespace
+  values = [
+    <<-EOT
+    crds:
+      create: true
+    EOT
+  ]
 }
 
 # Create session Redis cluster
@@ -25,8 +30,8 @@ resource "helm_release" "session_db" {
   namespace = var.namespace
 
   repository = "https://ot-container-kit.github.io/helm-charts/"
-  chart      = "redis"
-  version    = var.redis-version # différent de celui de l'operator !
+  chart      = "redis-cluster"
+  version    = var.redis-cluster-version
 
   values     = [file("${path.module}/helm/session-db-values.yaml")]
   depends_on = [helm_release.redis_operator]

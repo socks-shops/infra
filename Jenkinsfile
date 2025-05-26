@@ -4,61 +4,88 @@ pipeline {
     }
     stages {
 
-        stage('Init') {
+        stage('Check infrastructure terraform files') {
             steps {
                 script {
                     sh """
+                    cd infrastructure
                     terraform init
-                    """
-                }
-            }
-        }
-
-        stage('Validate') {
-            steps {
-                script {
-                    sh """
                     terraform validate
-                    """
-                }
-            }
-        }
-
-        stage('Format') {
-            steps {
-                script {
-                    sh """
                     terraform fmt -recursive
-                    """
-                }
-            }
-        }
-
-        stage('Plan') {
-            steps {
-                script {
-                    sh """
                     terraform plan
                     """
                 }
             }
         }
 
-        // stage('Apply') {
+        // stage('Deploy infrastructure to AWS') {
         //     steps {
         //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
         //             sh """
+        //             cd infrastructure
         //             terraform apply --auto-approve
         //             """
         //         }
         //     }
         // }
 
-        // stage('Destroy') {
+        // stage('Destroy AWS infrastructure') {
         //     steps {
         //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-        //             input message: 'Lancer le destroy?', ok: 'Oui'
+        //             input message: 'Lancer le destroy de l'infrastructure AWS ?', ok: 'Oui'
         //             sh """
+        //             cd infrastructure
+        //             terraform destroy --auto-approve
+        //             """
+        //         }
+        //     }
+        // }
+
+        // stage('Check cluster configuration terraform files') {
+        //     steps {
+        //         script {
+        //             sh """
+        //             cd cluster-config
+        //             terraform init
+        //             terraform validate
+        //             terraform fmt -recursive
+        //             terraform plan
+        //             """
+        //         }
+        //     }
+        // }
+
+        // stage('Deploy AWS EKS cluster configuration to AWS') {
+        //     steps {
+        //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //             sh """
+        //             cd cluster-config
+        //             terraform apply --auto-approve --var-file terraform-dev.tfvars
+        //             """
+        //         }
+        //     }
+        // }
+
+        // stage('Destroy AWS EKS cluster configuration') {
+        //     steps {
+        //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //             input message: 'Lancer le destroy de la configuration du cluster?', ok: 'Oui'
+        //             sh """
+        //             cd cluster-config
+        //             terraform destroy --auto-approve
+        //             """
+        //         }
+        //     }
+        // }
+
+        // stage('Destroy AWS infrastructure + EKS cluster configuration') {
+        //     steps {
+        //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //             input message: 'Lancer le destroy de l'infrastructure et de la configuration du cluster ?', ok: 'Oui'
+        //             sh """
+        //             cd cluster-config
+        //             terraform destroy --auto-approve
+        //             cd ../infrastructure
         //             terraform destroy --auto-approve
         //             """
         //         }

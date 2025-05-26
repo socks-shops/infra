@@ -24,11 +24,9 @@ resource "aws_iam_role" "redis_operator_role" {
 resource "aws_iam_policy" "redis_operator_policy" {
   name        = "${var.cluster_name}-redis-operator-policy"
   description = "IAM policy for redis-operator"
-  policy = jsonencode(jsondecode(replace(
-    file("${path.module}/aws_redis_operator_policy.json"),
-    "__KMS_KEY_ARN__",
-    var.kms_key_arn
-  )))
+  policy = templatefile("${path.module}/aws_redis_operator_policy.json.tpl", {
+    account_id = var.account_id
+  })
 }
 
 # Attach policies to roles

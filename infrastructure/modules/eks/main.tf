@@ -192,7 +192,7 @@ resource "aws_iam_role_policy_attachment" "aws_lb_controller_attachment" {
 #################################################
 
 resource "aws_eks_cluster" "sockshop-eks" {
-  name     = "${var.cluster_name}-VPC"
+  name     = var.cluster_name
   role_arn = aws_iam_role.master.arn
   version  = var.eks_version
 
@@ -201,7 +201,7 @@ resource "aws_eks_cluster" "sockshop-eks" {
   }
 
   tags = {
-    "Name" = "${var.cluster_name}-VPC"
+    "Name" = "${var.cluster_name}"
   }
 
   depends_on = [
@@ -209,6 +209,11 @@ resource "aws_eks_cluster" "sockshop-eks" {
     aws_iam_role_policy_attachment.AmazonEKSServicePolicy,
     aws_iam_role_policy_attachment.AmazonEKSVPCResourceController,
   ]
+}
+
+# Token to connect Kubernetes
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.sockshop-eks.name
 }
 
 resource "aws_eks_node_group" "node-grp" {

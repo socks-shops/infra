@@ -5,7 +5,7 @@ variable "region" {
 }
 
 variable "aws_account_id" {
-  default = "471744311643"
+  default = "472454369658"
 }
 
 variable "iam_role_name" {
@@ -113,11 +113,17 @@ variable "subdomain_name" {
 
 
 #################################################
-################# KMS VARIABLES #################
+############## BUCKETS VARIABLES ################
 #################################################
 
-variable "common_kms_key_id" {
-  type        = string
-  description = "ARN de la clé KMS commune pour le chiffrement des sauvegardes et autres données sensibles."
-  default     = "sockshop-velero-backups-bucket"
+variable "mongodb_backup_bucket_name" {
+  default = "sockshop-mongo-backups-bucket-1234"
+}
+
+variable "mysql_backup_bucket_name" {
+  default = "sockshop-mysql-backups-bucket-1234"
+}
+
+variable "velero_backup_bucket_name" {
+  default = "sockshop-velero-backups-bucket-1234"
 }

@@ -6,5 +6,4 @@ psmdb:
   enabled: false
 
 operator:
-  createNamespace: true
-  namespace: mongodb
+  createNamespace: false

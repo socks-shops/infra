@@ -13,7 +13,11 @@ variable "oidc_provider" {
   description = "ARN de l'OIDC provider EKS"
 }
 
-variable "kms_key_arn" {
-  description = "ARN of the shared KMS key"
+variable "velero_backup_bucket_name" {
+  type = string
+}
+
+variable "region" {
+  description = "Région AWS"
   type        = string
 }

@@ -21,7 +21,6 @@ resource "kubernetes_service_account" "percona-mongodb" {
 resource "helm_release" "percona_operator" {
   name             = "mongodb-operator"
   namespace        = var.namespace
-  create_namespace = true
 
   repository = "https://percona.github.io/percona-helm-charts/"
   chart      = "psmdb-operator"

@@ -3,19 +3,13 @@
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": "arn:aws:s3:::sockshop-mongo-backups-bucket"
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::sockshop-mysql-backups-bucket"
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
-      "Resource": "arn:aws:s3:::sockshop-mongo-backups-bucket/*"
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::sockshop-mysql-backups-bucket/*"
     },
     {
       "Effect": "Allow",
@@ -77,12 +71,28 @@
     {
       "Effect": "Allow",
       "Action": [
-        "kms:DescribeKey",
-        "kms:GenerateDataKey",
-        "kms:Encrypt",
-        "kms:Decrypt"
+        "rds:DescribeDBInstances",
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "rds:ModifyDBInstance",
+        "rds:RebootDBInstance",
+        "rds:RestoreDBInstanceFromSnapshot",
+        "rds:CreateDBSnapshot",
+        "rds:DeleteDBSnapshot",
+        "rds:DescribeDBSnapshots",
+        "rds:DescribeDBClusters",
+        "rds:CreateDBCluster",
+        "rds:DeleteDBCluster",
+        "rds:ModifyDBCluster",
+        "rds:RebootDBCluster",
+        "rds:RestoreDBClusterFromSnapshot",
+        "rds:CreateDBClusterSnapshot",
+        "rds:DeleteDBClusterSnapshot",
+        "rds:DescribeDBClusterSnapshots",
+        "rds:AddTagsToResource",
+        "rds:RemoveTagsFromResource"
       ],
-      "Resource": "__KMS_KEY_ARN__"
+      "Resource": "*"
     },
     {
       "Effect": "Allow",
@@ -92,7 +102,7 @@
         "secretsmanager:ListSecrets"
       ],
       "Resource": [
-        "arn:aws:secretsmanager:us-east-1:471744311643:secret:mongodb-*"
+        "arn:aws:secretsmanager:us-east-1:${account_id}:secret:mysql-*"
       ]
     }
   ]

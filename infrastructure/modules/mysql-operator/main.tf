@@ -24,11 +24,9 @@ resource "aws_iam_role" "percona_mysql_role" {
 resource "aws_iam_policy" "percona_mysql_policy" {
   name        = "${var.cluster_name}-percona-mysql-policy"
   description = "IAM policy for percona-mysql backups on EKS"
-  policy = jsonencode(jsondecode(replace(
-    file("${path.module}/aws_percona_mysql_policy.json"),
-    "__KMS_KEY_ARN__",
-    var.kms_key_arn
-  )))
+  policy = templatefile("${path.module}/aws_percona_mysql_policy.json.tpl", {
+    account_id = var.account_id
+  })
 }
 
 # Attach policies to roles

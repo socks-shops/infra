@@ -9,14 +9,14 @@
         "s3:PutObject",
         "s3:DeleteObject"
       ],
-      "Resource": "arn:aws:s3:::sockshop-velero-backups-bucket/*"
+      "Resource": "arn:aws:s3:::${bucket_name}/*"
     },
     {
       "Effect": "Allow",
       "Action": [
         "s3:ListBucket"
       ],
-      "Resource": "arn:aws:s3:::sockshop-velero-backups-bucket"
+      "Resource": "arn:aws:s3:::${bucket_name}"
     },
     {
       "Effect": "Allow",
@@ -40,17 +40,7 @@
         "ec2:DetachVolume",
         "ec2:ModifyVolumeAttribute"
       ],
-      "Resource": "arn:aws:ec2:us-east-1::volume/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "kms:DescribeKey",
-        "kms:GenerateDataKey*",
-        "kms:Encrypt",
-        "kms:Decrypt"
-      ],
-      "Resource": "__KMS_KEY_ARN__"
+      "Resource": "arn:aws:ec2:${region}::volume/*"
     },
     {
       "Effect": "Allow",

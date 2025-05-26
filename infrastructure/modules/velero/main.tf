@@ -25,15 +25,47 @@ resource "aws_iam_policy" "velero" {
   name        = "${var.cluster_name}-velero-policy"
   description = "IAM policy for Velero backups on EKS"
   # Charge la politique depuis le fichier JSON externe
-  policy = jsonencode(jsondecode(replace(
-    file("${path.module}/aws_velero_policy.json"),
-    "__KMS_KEY_ARN__",
-    var.kms_key_arn
-  )))
+  policy = templatefile("${path.module}/aws_velero_policy.json.tpl", {
+    bucket_name = var.velero_backup_bucket_name,
+    region      = var.region
+  })
 }
 
 # Attach policies to the role
 resource "aws_iam_role_policy_attachment" "velero" {
   policy_arn = aws_iam_policy.velero.arn
   role       = aws_iam_role.velero.name
+}
+
+
+################ BACKUPS BUCKET #################
+#################################################
+
+# Create bucket S3 for backups
+resource "aws_s3_bucket" "velero_backup" {
+  bucket        = var.velero_backup_bucket_name
+  force_destroy = true
+
+  tags = {
+    Name = "velero-backups"
+  }
+}
+
+# Activate versioning
+resource "aws_s3_bucket_versioning" "velero_backup" {
+  bucket = aws_s3_bucket.velero_backup.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Set minimal security
+resource "aws_s3_bucket_public_access_block" "velero_backup" {
+  bucket = aws_s3_bucket.velero_backup.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }

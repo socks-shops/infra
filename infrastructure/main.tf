@@ -58,24 +58,14 @@ module "securitygroup" {
   cidr_all = var.cidr_all
 }
 
-module "kms" {
-  source     = "./modules/kms"
-  account_id = var.aws_account_id
-  operators_role_arns = [
-    "arn:aws:iam::${var.aws_account_id}:role/velero",
-    "arn:aws:iam::${var.aws_account_id}:role/percona_mongodb_role",
-    "arn:aws:iam::${var.aws_account_id}:role/percona_mysql_role",
-    "arn:aws:iam::${var.aws_account_id}:role/redis_operator_role"
-  ]
-}
-
 module "velero" {
-  source        = "./modules/velero"
-  cluster_name  = module.eks.cluster_name
-  account_id    = var.aws_account_id
-  oidc_provider = module.eks.oidc_provider_arn
-  kms_key_arn   = module.kms.shared_kms_key_arn
-  depends_on    = [module.eks]
+  source                    = "./modules/velero"
+  cluster_name              = module.eks.cluster_name
+  account_id                = var.aws_account_id
+  oidc_provider             = module.eks.oidc_provider_arn
+  velero_backup_bucket_name = var.velero_backup_bucket_name
+  region                    = var.region
+  depends_on                = [module.eks]
 }
 
 module "mongodb_operator" {
@@ -83,7 +73,6 @@ module "mongodb_operator" {
   cluster_name  = module.eks.cluster_name
   account_id    = var.aws_account_id
   oidc_provider = module.eks.oidc_provider_arn
-  kms_key_arn   = module.kms.shared_kms_key_arn
   depends_on    = [module.eks]
 }
 
@@ -92,7 +81,6 @@ module "mysql_operator" {
   cluster_name  = module.eks.cluster_name
   account_id    = var.aws_account_id
   oidc_provider = module.eks.oidc_provider_arn
-  kms_key_arn   = module.kms.shared_kms_key_arn
   depends_on    = [module.eks]
 }
 
@@ -101,7 +89,6 @@ module "redis_operator" {
   cluster_name  = module.eks.cluster_name
   account_id    = var.aws_account_id
   oidc_provider = module.eks.oidc_provider_arn
-  kms_key_arn   = module.kms.shared_kms_key_arn
   depends_on    = [module.eks]
 }
 

@@ -15,6 +15,11 @@ output "cluster_ca" {
   value = module.eks.cluster_auth
 }
 
+output "cluster_token" {
+  value     = module.eks.cluster_token
+  sensitive = true
+}
+
 output "cluster_name" {
   value = module.eks.cluster_name
 }
@@ -54,4 +59,13 @@ output "percona_mysql_operator_role_arn" {
 
 output "redis_operator_role_arn" {
   value = module.redis_operator.redis_operator_role_arn
+}
+
+
+
+################### BUCKETS #####################
+#################################################
+
+output "velero_backup_bucket_name" {
+  value = var.velero_backup_bucket_name
 }
