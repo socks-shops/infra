@@ -49,17 +49,17 @@ output "velero_role_arn" {
 ################# DB OPERATORS ##################
 #################################################
 
-output "percona_mongodb_operator_role_arn" {
-  value = module.mongodb_operator.percona_mongodb_role_arn
-}
+# output "percona_mongodb_operator_role_arn" {
+#   value = module.mongodb_operator.percona_mongodb_role_arn
+# }
 
-output "percona_mysql_operator_role_arn" {
-  value = module.mysql_operator.percona_mysql_role_arn
-}
+# output "percona_mysql_operator_role_arn" {
+#   value = module.mysql_operator.percona_mysql_role_arn
+# }
 
-output "redis_operator_role_arn" {
-  value = module.redis_operator.redis_operator_role_arn
-}
+# output "redis_operator_role_arn" {
+#   value = module.redis_operator.redis_operator_role_arn
+# }
 
 
 

@@ -2,7 +2,7 @@
 resource "kubernetes_service_account" "redis-operator" {
   metadata {
     name      = "redis"
-    namespace = var.namespace
+    namespace = var.env
     annotations = {
       "eks.amazonaws.com/role-arn" = var.redis_operator_role_arn
     }
@@ -15,7 +15,7 @@ resource "helm_release" "redis_operator" {
   repository = "https://ot-container-kit.github.io/helm-charts/"
   chart      = "redis-operator"
   version    = var.redis-operator-version
-  namespace  = var.namespace
+  namespace  = var.env
   values = [
     <<-EOT
     crds:
@@ -27,7 +27,7 @@ resource "helm_release" "redis_operator" {
 # Create session Redis cluster
 resource "helm_release" "session_db" {
   name      = "session-db"
-  namespace = var.namespace
+  namespace = var.env
 
   repository = "https://ot-container-kit.github.io/helm-charts/"
   chart      = "redis-cluster"

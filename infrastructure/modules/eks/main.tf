@@ -117,6 +117,12 @@ resource "aws_iam_role_policy_attachment" "s3" {
   role       = aws_iam_role.worker.name
 }
 
+resource "aws_iam_role_policy_attachment" "AmazonEBSCSIDriverPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.worker.name
+}
+
+
 # Create IAM instance profile
 resource "aws_iam_instance_profile" "worker" {
   depends_on = [aws_iam_role.worker]

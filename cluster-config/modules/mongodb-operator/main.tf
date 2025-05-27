@@ -1,74 +1,57 @@
 ########### SERVICE ACCOUNT CREATION ############
 #################################################
 
-# Create "mongodb" Service Account
-resource "kubernetes_service_account" "percona-mongodb" {
-  metadata {
-    name      = "mongodb"
-    namespace = var.namespace
-    annotations = {
-      "eks.amazonaws.com/role-arn" = var.percona_mongodb_operator_role_arn
-    }
-  }
-}
+# Bitnami génère automatiquement un service account pour l'operator.
+# Il ne faut en créer un qu'a partir du moment ou on veut utiliser un bucket S3 pour stocker des backups
+
+# # Create "mongodb" Service Account
+# resource "kubernetes_service_account" "percona-mongodb" {
+#   metadata {
+#     name      = "mongodb"
+#     namespace = var.namespace
+#     annotations = {
+#       "eks.amazonaws.com/role-arn" = var.percona_mongodb_operator_role_arn
+#     }
+#   }
+# }
 
 
 
 ############### OPERATOR CREATION ###############
 #################################################
 
-# Percona operator
-resource "helm_release" "percona_operator" {
-  name             = "mongodb-operator"
-  namespace        = var.namespace
-
-  repository = "https://percona.github.io/percona-helm-charts/"
-  chart      = "psmdb-operator"
-  version    = var.psmdb-version
-
-  values = [file("${path.module}/helm/operator-values.yaml")]
-}
-
-
-
-############## DB CLUSTER CREATION ##############
-#################################################
-
-# Carts MongoDB cluster
 resource "helm_release" "carts_db" {
-  name      = "carts-db"
-  namespace = var.namespace
+  name             = "carts-db"
+  namespace        = var.env
+  create_namespace = false
 
-  repository = "https://percona.github.io/percona-helm-charts/"
-  chart      = "psmdb-db"
-  version    = var.psmdb-version
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "mongodb"
+  version    = "16.0.0"
 
-  values     = [file("${path.module}/helm/carts-db-values.yaml")]
-  depends_on = [helm_release.percona_operator]
+  values = [file("${path.module}/helm/carts-db-values.yaml")]
 }
 
-# Orders MongoDB cluster
 resource "helm_release" "orders_db" {
-  name      = "orders-db"
-  namespace = var.namespace
+  name             = "orders-db"
+  namespace        = var.env
+  create_namespace = false
 
-  repository = "https://percona.github.io/percona-helm-charts/"
-  chart      = "psmdb-db"
-  version    = var.psmdb-version
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "mongodb"
+  version    = "16.0.0"
 
-  values     = [file("${path.module}/helm/orders-db-values.yaml")]
-  depends_on = [helm_release.percona_operator]
+  values = [file("${path.module}/helm/orders-db-values.yaml")]
 }
 
-# User MongoDB cluster
 resource "helm_release" "user_db" {
-  name      = "user-db"
-  namespace = var.namespace
+  name             = "user-db"
+  namespace        = var.env
+  create_namespace = false
 
-  repository = "https://percona.github.io/percona-helm-charts/"
-  chart      = "psmdb-db"
-  version    = var.psmdb-version
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "mongodb"
+  version    = "16.0.0"
 
-  values     = [file("${path.module}/helm/user-db-values.yaml")]
-  depends_on = [helm_release.percona_operator]
+  values = [file("${path.module}/helm/user-db-values.yaml")]
 }

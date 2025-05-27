@@ -1,8 +1,3 @@
-variable "namespace" {
-  type    = string
-  default = "redis"
-}
-
 variable "redis-operator-version" {
   type    = string
   default = "0.14.0"

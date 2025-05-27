@@ -1,6 +1,6 @@
 variable "namespace" {
   type    = string
-  default = "mysql"
+  default = "mongodb"
 }
 
 variable "psmdb-version" {
@@ -8,7 +8,7 @@ variable "psmdb-version" {
   default = "1.20.0"
 }
 
-variable "percona_mysql_operator_role_arn" {
+variable "percona_mongodb_operator_role_arn" {
   description = "ARN du rôle IAM utilisé par mongodb operator via IRSA"
   type        = string
 }

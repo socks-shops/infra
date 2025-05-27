@@ -4,9 +4,10 @@ redisCluster:
   name: session-db
   clusterSize: 1
 
-  image:
-    repository: redis
-    tag: "7.0.12"
+image:
+  registry: docker.io
+  repository: redis
+  tag: "7.0.12"
 
   # Ports exposés (par défaut 6379)
   service:

@@ -1,0 +1,15 @@
+nameOverride: user-db
+psmdb:
+  clusterName: user-db
+  replsets:
+    - name: rs0
+      size: 1
+      volumeSpec:
+        persistentVolumeClaim:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 512Mi
+          storageClassName: gp2
+  expose:
+    exposeType: ClusterIP

@@ -1,15 +1,46 @@
-nameOverride: user-db
-psmdb:
-  clusterName: user-db
-  replsets:
-    - name: rs0
-      size: 1
-      volumeSpec:
-        persistentVolumeClaim:
-          accessModes: [ "ReadWriteOnce" ]
-          resources:
-            requests:
-              storage: 512Mi
-          storageClassName: gp2
-  expose:
-    exposeType: ClusterIP
+fullnameOverride: user-db
+
+architecture: replicaset
+replicaCount: 1
+
+auth:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+persistence:
+  enabled: true
+  storageClass: gp2
+  accessModes:
+    - ReadWriteOnce
+  size: 512Mi
+
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1001
+  runAsNonRoot: true
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - CHOWN
+      - SETGID
+      - SETUID
+
+service:
+  nameOverride: user-db
+  type: ClusterIP
+  port: 27017
+
+livenessProbe:
+  enabled: true
+
+readinessProbe:
+  enabled: true

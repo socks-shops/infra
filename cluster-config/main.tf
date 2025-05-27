@@ -70,6 +70,14 @@ module "aws_lb_controller" {
 }
 
 
+################ EBS CSI DRIVER #################
+#################################################
+
+module "aws_ebs_csi_driver" {
+  source = "./modules/aws-ebs-csi-driver"
+}
+
+
 #################### VELERO #####################
 #################################################
 
@@ -87,22 +95,24 @@ module "velero" {
 #################################################
 
 module "mongodb_operator" {
-  source                            = "./modules/mongodb-operator"
-  percona_mongodb_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.percona_mongodb_operator_role_arn
+  source = "./modules/mongodb-operator"
+  env    = var.env
 
   depends_on = [module.namespaces]
 }
 
-module "mysql_operator" {
-  source                          = "./modules/mysql-operator"
-  percona_mysql_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.percona_mysql_operator_role_arn
+# module "mysql_operator" {
+#   source                          = "./modules/mysql-operator"
+#   env = var.env
+#   percona_mysql_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.percona_mysql_operator_role_arn
 
-  depends_on = [module.namespaces]
-}
+#   depends_on = [module.namespaces]
+# }
 
-module "redis_operator" {
-  source                  = "./modules/redis-operator"
-  redis_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.redis_operator_role_arn
+# module "redis_operator" {
+#   source                  = "./modules/redis-operator"
+#   env                     = var.env
+#   redis_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.redis_operator_role_arn
 
-  depends_on = [module.namespaces]
-}
+#   depends_on = [module.namespaces]
+# }

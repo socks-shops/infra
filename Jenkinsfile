@@ -21,6 +21,7 @@ pipeline {
         // stage('Deploy infrastructure to AWS') {
         //     steps {
         //         withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //             input message: 'Lancer le deploy de l'infrastructure AWS ?', ok: 'Oui'
         //             sh """
         //             cd infrastructure
         //             terraform apply --auto-approve
