@@ -45,12 +45,20 @@ output "velero_role_arn" {
   value = module.velero.velero_role_arn
 }
 
+output "sanitized_oidc" {
+  value = module.velero.sanitized_oidc
+}
+
+output "velero_assume_role_policy" {
+  value = module.velero.velero_assume_role_policy
+}
+
 
 ################# DB OPERATORS ##################
 #################################################
 
-# output "percona_mongodb_operator_role_arn" {
-#   value = module.mongodb_operator.percona_mongodb_role_arn
+# output "mongodb_operator_role_arn" {
+#   value = module.mongodb_operator.mongodb_operator_role_arn
 # }
 
 # output "percona_mysql_operator_role_arn" {

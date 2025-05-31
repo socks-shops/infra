@@ -4,12 +4,12 @@
     {
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
-      "Resource": "arn:aws:s3:::sockshop-mongo-backups-bucket"
+      "Resource": "arn:aws:s3:::${mongodb_backup_bucket_name}"
     },
     {
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
-      "Resource": "arn:aws:s3:::sockshop-mongo-backups-bucket/*"
+      "Resource": "arn:aws:s3:::${mongodb_backup_bucket_name}/*"
     },
     {
       "Effect": "Allow",

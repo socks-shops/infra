@@ -18,6 +18,7 @@ locals {
 
 module "network" {
   source               = "./modules/network"
+  cluster_name         = var.cluster_name
   network_name         = "sock-shop-network"
   vpc_cidr             = var.vpc_cidr
   az1_pub_subnet_cidr  = "10.0.1.0/24" #var.subnet_cidr
@@ -45,6 +46,7 @@ module "eks" {
   eks_min_worker_node           = var.min_worker_node
   eks_max_worker_node           = var.max_worker_node
   eks_worker_node_instance_type = var.worker_node_instance_type
+  eks_worker_node_capacity_type = var.worker_node_capacity_type
   eks_version                   = var.eks_version
   aws_region                    = var.region
   account_id                    = var.aws_account_id

@@ -4,10 +4,11 @@
     {
       "Effect": "Allow",
       "Action": [
-        "s3:ListBucket",
         "s3:GetObject",
         "s3:PutObject",
-        "s3:DeleteObject"
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
       ],
       "Resource": "arn:aws:s3:::${bucket_name}/*"
     },
@@ -49,25 +50,6 @@
         "elasticloadbalancing:DescribeLoadBalancerAttributes",
         "elasticloadbalancing:DescribeListeners",
         "elasticloadbalancing:DescribeTargetGroups"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "rds:DescribeDBInstances",
-        "rds:DescribeDBSnapshots",
-        "rds:DescribeDBClusters",
-        "rds:DescribeDBClusterSnapshots"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:ListTables",
-        "dynamodb:DescribeTable",
-        "dynamodb:Scan"
       ],
       "Resource": "*"
     }

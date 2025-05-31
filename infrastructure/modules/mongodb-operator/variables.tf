@@ -12,3 +12,7 @@ variable "oidc_provider" {
   type        = string
   description = "ARN de l'OIDC provider EKS"
 }
+
+variable "mongodb_backup_bucket_name" {
+  type = string
+}

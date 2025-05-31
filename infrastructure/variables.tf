@@ -33,7 +33,12 @@ variable "vpc_cidr" {
 }
 
 variable "worker_node_instance_type" {
-  default = ["m5.2xlarge"]
+  default = ["m6a.2xlarge", "m5.2xlarge"]
+}
+
+variable "worker_node_capacity_type" {
+  description = "values: ON_DEMAND, SPOT"
+  default     = "SPOT"
 }
 
 variable "eks_version" {
@@ -50,7 +55,7 @@ variable "backup_time_window" {
 }
 
 variable "desired_worker_node" {
-  default = 1
+  default = 2
 }
 
 variable "max_worker_node" {
@@ -58,7 +63,7 @@ variable "max_worker_node" {
 }
 
 variable "min_worker_node" {
-  default = 1
+  default = 2
 }
 
 variable "subnet_cidr" {

@@ -1,18 +1,27 @@
 # IAM role for the mongodb operator Service Account
-resource "aws_iam_role" "percona_mongodb_role" {
-  name = "${var.cluster_name}-percona-mongodb-role"
+locals {
+  oidc_provider_short = split("oidc-provider/", var.oidc_provider)[1]
+}
+
+resource "aws_iam_role" "mongodb_operator_role" {
+  name = "${var.cluster_name}-mongodb-operator-role"
+
   assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Federated" : "arn:aws:iam::${var.account_id}:oidc-provider/${replace(var.oidc_provider, "https://", "")}"
+        Effect = "Allow",
+        Principal = {
+          Federated = "arn:aws:iam::${var.account_id}:oidc-provider/${local.oidc_provider_short}"
         },
-        "Action" : "sts:AssumeRoleWithWebIdentity",
-        "Condition" : {
-          "StringEquals" : {
-            "${replace(var.oidc_provider, "https://", "")}:sub" : "system:serviceaccount:percona-mongodb:percona-mongodb"
+        Action = "sts:AssumeRoleWithWebIdentity",
+        Condition = {
+          "StringLike": {
+            "${local.oidc_provider_short}:sub": [
+              "system:serviceaccount:dev:mongodb-operator-sa",
+              "system:serviceaccount:staging:mongodb-operator-sa",
+              "system:serviceaccount:prod:mongodb-operator-sa"
+            ]
           }
         }
       }
@@ -21,16 +30,17 @@ resource "aws_iam_role" "percona_mongodb_role" {
 }
 
 # Create policies
-resource "aws_iam_policy" "percona_mongodb_policy" {
-  name        = "${var.cluster_name}-percona-mongodb-policy"
-  description = "IAM policy for percona-mongodb backups on EKS"
-  policy = templatefile("${path.module}/aws_percona_mongodb_policy.json.tpl", {
+resource "aws_iam_policy" "mongodb_operator_policy" {
+  name        = "${var.cluster_name}-mongodb-operator-policy"
+  description = "IAM policy for mongodb-operator backups on EKS"
+  policy = templatefile("${path.module}/aws_mongodb_operator_policy.json.tpl", {
     account_id = var.account_id
+    mongodb_backup_bucket_name = var.mongodb_backup_bucket_name
   })
 }
 
 # Attach policies to roles
-resource "aws_iam_role_policy_attachment" "percona_mongodb" {
-  policy_arn = aws_iam_policy.percona_mongodb_policy.arn
-  role       = aws_iam_role.percona_mongodb_role.name
+resource "aws_iam_role_policy_attachment" "mongodb_operator_policy_attachment" {
+  policy_arn = aws_iam_policy.mongodb_operator_policy.arn
+  role       = aws_iam_role.mongodb_operator_role.name
 }

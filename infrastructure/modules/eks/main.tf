@@ -227,7 +227,7 @@ resource "aws_eks_node_group" "node-grp" {
   node_group_name = var.eks_node_group_name
   node_role_arn   = aws_iam_role.worker.arn
   subnet_ids      = var.subnet_ids
-  capacity_type   = "ON_DEMAND"
+  capacity_type   = var.eks_worker_node_capacity_type
   disk_size       = 20
   instance_types  = var.eks_worker_node_instance_type
 

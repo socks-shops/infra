@@ -1,3 +1,7 @@
+variable "cluster_name" {
+  type = string
+}
+
 variable "network_name" {
   default     = "sock-shop-network"
   description = "sock-shop-network"
@@ -46,7 +50,7 @@ variable "public_az1" {
 }
 
 variable "public_az2" {
-  default     = "us-east-1a"
+  default     = "us-east-1b"
   type        = string
   description = "availability zone for the second public subnet "
 }
@@ -62,6 +66,3 @@ variable "private_az2" {
   type        = string
   description = "availability zone for the second private subnet "
 }
-
-
-

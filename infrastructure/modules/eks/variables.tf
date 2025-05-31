@@ -59,6 +59,12 @@ variable "eks_worker_node_instance_type" {
   description = "t3.medium"
 }
 
+variable "eks_worker_node_capacity_type" {
+  type        = string
+  description = "values: ON_DEMAND, SPOT"
+  default     = "ON_DEMAND"
+}
+
 variable "eks_version" {
   default     = "1.29"
   description = "1.29"

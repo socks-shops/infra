@@ -1,24 +1,30 @@
 # IAM role for the Velero service account
+locals {
+  oidc_provider_short = split("oidc-provider/", var.oidc_provider)[1]
+}
+
 resource "aws_iam_role" "velero" {
   name = "${var.cluster_name}-velero-role"
+
   assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Federated" : "arn:aws:iam::${var.account_id}:oidc-provider/${replace(var.oidc_provider, "https://", "")}"
+        Effect = "Allow",
+        Principal = {
+          Federated = "arn:aws:iam::${var.account_id}:oidc-provider/${local.oidc_provider_short}"
         },
-        "Action" : "sts:AssumeRoleWithWebIdentity",
-        "Condition" : {
-          "StringEquals" : {
-            "${replace(var.oidc_provider, "https://", "")}:sub" : "system:serviceaccount:velero:velero"
+        Action = "sts:AssumeRoleWithWebIdentity",
+        Condition = {
+          "StringEquals" = {
+            "${local.oidc_provider_short}:sub" = "system:serviceaccount:velero:velero"
           }
         }
       }
     ]
   })
 }
+
 
 # Policies for the role
 resource "aws_iam_policy" "velero" {

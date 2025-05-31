@@ -34,9 +34,9 @@ resource "aws_subnet" "pub_subnet_az1" {
   map_public_ip_on_launch = true
   availability_zone       = var.public_az1
   tags = {
-    Name                                     = "public_subnet_az1"
-    "kubernetes.io/role/elb"                 = "1"
-    "kubernetes.io/cluster/sockshop-EKS-VPC" = "shared"
+    Name                                        = "public_subnet_az1"
+    "kubernetes.io/role/elb"                    = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
 
   }
 }
@@ -48,9 +48,9 @@ resource "aws_subnet" "pub_subnet_az2" {
   map_public_ip_on_launch = true
   availability_zone       = var.public_az2
   tags = {
-    Name                                     = "public_subnet_az2"
-    "kubernetes.io/role/elb"                 = "1"
-    "kubernetes.io/cluster/sockshop-EKS-VPC" = "shared"
+    Name                                        = "public_subnet_az2"
+    "kubernetes.io/role/elb"                    = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
 
@@ -61,9 +61,9 @@ resource "aws_subnet" "priv_subnet_az1" {
   availability_zone = var.private_az1
 
   tags = {
-    Name                                     = "private_subnet_az1"
-    "kubernetes.io/role/internal-elb"        = "1"
-    "kubernetes.io/cluster/sockshop-EKS-VPC" = "shared"
+    Name                                        = "private_subnet_az1"
+    "kubernetes.io/role/internal-elb"           = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
 
   }
 }
@@ -75,9 +75,9 @@ resource "aws_subnet" "priv_subnet_az2" {
   availability_zone = var.private_az2
 
   tags = {
-    Name                                     = "private_subnet_az2"
-    "kubernetes.io/role/internal-elb"        = "1"
-    "kubernetes.io/cluster/sockshop-EKS-VPC" = "shared"
+    Name                                        = "private_subnet_az2"
+    "kubernetes.io/role/internal-elb"           = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
 
