@@ -1,12 +1,28 @@
-# Create Service Account Velero
-resource "kubernetes_service_account" "velero" {
-  metadata {
-    name      = "velero"
-    namespace = "velero"
-    annotations = {
-      "eks.amazonaws.com/role-arn" = var.veloro_role_arn
-    }
+# # Create Service Account Velero
+# resource "kubernetes_service_account" "velero" {
+#   metadata {
+#     name      = "velero"
+#     namespace = "velero"
+#     annotations = {
+#       "eks.amazonaws.com/role-arn" = var.velero_role_arn
+#     }
+#   }
+# }
+
+# Conecte to the cluster the Velero CRDs local-exec
+resource "null_resource" "update_kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.region} update-kubeconfig --name ${var.cluster_name}"
   }
+}
+
+# Install les CRDs de Velero
+resource "null_resource" "velero_crds" {
+  provisioner "local-exec" {
+    command = "velero install --crds-only --dry-run -o yaml | kubectl apply -f -"
+  }
+
+  depends_on = [null_resource.update_kubeconfig]
 }
 
 # Install Velero
@@ -21,8 +37,11 @@ resource "helm_release" "velero" {
     templatefile("${path.module}/helm/velero-values.yaml.tmpl", {
       velero_backup_bucket_name = var.velero_backup_bucket_name
       region                    = var.region
+      velero_role_arn           = var.velero_role_arn
     })
   ]
 
   force_update = true
+
+  depends_on = [null_resource.velero_crds]
 }

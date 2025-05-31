@@ -64,7 +64,7 @@ module "namespaces" {
 
 module "aws_lb_controller" {
   source       = "./modules/aws-lb-controller"
-  namespace    = "kube-system"
+  namespace    = var.env
   cluster_name = data.terraform_remote_state.infrastructure.outputs.cluster_name
   role_arn     = data.terraform_remote_state.infrastructure.outputs.aws_lb_controller_role_arn
 }
@@ -85,8 +85,8 @@ module "velero" {
   source                    = "./modules/velero"
   velero_backup_bucket_name = data.terraform_remote_state.infrastructure.outputs.velero_backup_bucket_name
   region                    = data.terraform_remote_state.infrastructure.outputs.region
-  veloro_role_arn           = data.terraform_remote_state.infrastructure.outputs.velero_role_arn
-
+  velero_role_arn           = data.terraform_remote_state.infrastructure.outputs.velero_role_arn
+  cluster_name              = data.terraform_remote_state.infrastructure.outputs.cluster_name
   depends_on = [module.namespaces]
 }
 
@@ -115,4 +115,14 @@ module "mongodb_operator" {
 #   redis_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.redis_operator_role_arn
 
 #   depends_on = [module.namespaces]
+# }
+
+
+################## MONITORING ###################
+#################################################
+
+# module "monitoring" {
+#   source                 = "./modules/monitoring"
+#   grafana_admin_password = var.grafana_admin_password
+#   namespace              = "monitoring"
 # }

@@ -1,0 +1,16 @@
+grafana:
+  enabled: true
+  adminPassword: "${grafana_admin_password}"
+  service:
+    type: LoadBalancer
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      folder: /var/lib/grafana/dashboards
+  persistence:
+    enabled: false
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false

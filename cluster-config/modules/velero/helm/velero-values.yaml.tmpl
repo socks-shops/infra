@@ -2,8 +2,11 @@ credentials:
   useSecret: false
 
 serviceAccount:
-  create: false
-  name: velero
+  server:
+    create: true
+    name: velero
+    annotations:
+      eks.amazonaws.com/role-arn: ${velero_role_arn}
 
 configuration:
   backupStorageLocation:
@@ -17,7 +20,6 @@ configuration:
   volumeSnapshotLocation:
     - name: eks-backup
       provider: aws
-      default: true
       config:
         region: ${region}
 

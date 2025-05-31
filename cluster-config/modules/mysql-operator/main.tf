@@ -20,7 +20,7 @@ resource "kubernetes_service_account" "percona-mongodb" {
 # Percona operator
 resource "helm_release" "percona_operator" {
   name      = "mongodb-operator"
-  namespace = var.namespace
+  namespace = "mongodb-operator"
 
   repository = "https://percona.github.io/percona-helm-charts/"
   chart      = "psmdb-operator"

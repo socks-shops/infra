@@ -7,7 +7,11 @@ variable "region" {
   type        = string
 }
 
-variable "veloro_role_arn" {
+variable "velero_role_arn" {
   description = "ARN du rôle IAM utilisé par Velero via IRSA"
   type        = string
+}
+
+variable "cluster_name" {
+  type = string
 }
