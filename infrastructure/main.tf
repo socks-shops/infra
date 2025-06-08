@@ -70,16 +70,16 @@ module "velero" {
   depends_on                = [module.eks]
 }
 
-# Bitnami (mongodb) génère automatiquement un service account pour l'operator.
-# Il ne faut en créer un qu'a partir du moment ou on veut utiliser un bucket S3 pour stocker des backups
 
-# module "mongodb_operator" {
-#   source        = "./modules/mongodb-operator"
-#   cluster_name  = module.eks.cluster_name
-#   account_id    = var.aws_account_id
-#   oidc_provider = module.eks.oidc_provider_arn
-#   depends_on    = [module.eks]
-# }
+
+module "mongodb_operator" {
+  source        = "./modules/mongodb-operator"
+  cluster_name  = module.eks.cluster_name
+  account_id    = var.aws_account_id
+  oidc_provider = module.eks.oidc_provider_arn
+  mongodb_backup_bucket_name = var.mongodb_backup_bucket_name
+  depends_on    = [module.eks]
+}
 
 # module "mysql_operator" {
 #   source        = "./modules/mysql-operator"

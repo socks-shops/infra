@@ -33,7 +33,8 @@ variable "vpc_cidr" {
 }
 
 variable "worker_node_instance_type" {
-  default = ["m6a.2xlarge", "m5.2xlarge"]
+  # default = ["m6a.2xlarge", "m5.2xlarge"] # for original microservices resources values ( 1 node )
+  default = ["t3.large", "t3a.large"] # for optimised microservices resources values ( 2 nodes )
 }
 
 variable "worker_node_capacity_type" {

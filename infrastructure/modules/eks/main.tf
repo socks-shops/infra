@@ -236,10 +236,6 @@ resource "aws_eks_node_group" "node-grp" {
     source_security_group_ids = [var.eks_sg]
   }
 
-  labels = {
-    env = "dev"
-  }
-
   scaling_config {
     desired_size = var.eks_desired_worker_node
     max_size     = var.eks_max_worker_node

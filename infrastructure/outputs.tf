@@ -57,9 +57,9 @@ output "velero_assume_role_policy" {
 ################# DB OPERATORS ##################
 #################################################
 
-# output "mongodb_operator_role_arn" {
-#   value = module.mongodb_operator.mongodb_operator_role_arn
-# }
+output "mongodb_operator_role_arn" {
+  value = module.mongodb_operator.mongodb_operator_role_arn
+}
 
 # output "percona_mysql_operator_role_arn" {
 #   value = module.mysql_operator.percona_mysql_role_arn
