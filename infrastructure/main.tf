@@ -70,33 +70,6 @@ module "velero" {
   depends_on                = [module.eks]
 }
 
-
-
-module "mongodb_operator" {
-  source        = "./modules/mongodb-operator"
-  cluster_name  = module.eks.cluster_name
-  account_id    = var.aws_account_id
-  oidc_provider = module.eks.oidc_provider_arn
-  mongodb_backup_bucket_name = var.mongodb_backup_bucket_name
-  depends_on    = [module.eks]
-}
-
-# module "mysql_operator" {
-#   source        = "./modules/mysql-operator"
-#   cluster_name  = module.eks.cluster_name
-#   account_id    = var.aws_account_id
-#   oidc_provider = module.eks.oidc_provider_arn
-#   depends_on    = [module.eks]
-# }
-
-# module "redis_operator" {
-#   source        = "./modules/redis-operator"
-#   cluster_name  = module.eks.cluster_name
-#   account_id    = var.aws_account_id
-#   oidc_provider = module.eks.oidc_provider_arn
-#   depends_on    = [module.eks]
-# }
-
 module "keypair" {
   source          = "./modules/keypair"
   ds_key_filename = local.key_path
