@@ -61,6 +61,12 @@ pipeline {
         }
 
         stage('Deploy AWS EKS cluster configuration to AWS') {
+            agent {
+                docker {
+                    image 'socksshop/aws-cli-terraform-curl-kubectl-velero:latest'
+                    args '-u root -v $HOME/.kube:/root/.kube'
+                }
+            }
             environment {
                 TF_VAR_grafana_admin_password = credentials('TF_VAR_grafana_admin_password')
             }
