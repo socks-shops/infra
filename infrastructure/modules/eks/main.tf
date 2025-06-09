@@ -151,7 +151,7 @@ resource "aws_iam_role" "aws_lb_controller" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
           "StringEquals" = {
-            "${replace(aws_eks_cluster.sockshop-eks.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:dev:aws-load-balancer-controller"
+            "${replace(aws_eks_cluster.sockshop-eks.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       }
