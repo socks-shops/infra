@@ -34,7 +34,7 @@ module "network" {
 
 module "eks" {
   source                        = "./modules/eks"
-  subnet_ids                    = module.network.public_subnet_ids
+  subnet_ids                    = module.network.private_subnet_ids
   cluster_name                  = var.cluster_name
   eks_node_group_name           = "node_group_sockshop"
   iam_role_name                 = "iam_role_sockshop"
