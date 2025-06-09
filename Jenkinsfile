@@ -121,20 +121,21 @@ pipeline {
             }
         }
 
-        post {
-            always {
-                echo "Pipeline terminée."
-            }
-            success {
-                echo "Opérations de destruction terminées avec succès."
-            }
-            failure {
-                echo "Les opérations de destruction ont échoué à un moment donné."
-            }
-            aborted {
-                echo "Pipeline annulée avant la destruction complète."
-            }
-        }
-
     }
+
+    post {
+        always {
+            echo "Pipeline terminée."
+        }
+        success {
+            echo "Opérations de destruction terminées avec succès."
+        }
+        failure {
+            echo "Les opérations de destruction ont échoué à un moment donné."
+        }
+        aborted {
+            echo "Pipeline annulée avant la destruction complète."
+        }
+    }
+
 }
