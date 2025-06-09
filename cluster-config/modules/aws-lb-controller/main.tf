@@ -2,7 +2,7 @@
 resource "kubernetes_service_account" "aws_lb_controller" {
   metadata {
     name      = "aws-load-balancer-controller"
-    namespace = var.namespace
+    namespace = "kube-system"
     annotations = {
       "eks.amazonaws.com/role-arn" = var.role_arn
     }
@@ -11,12 +11,12 @@ resource "kubernetes_service_account" "aws_lb_controller" {
 
 # Install AWS Load Balancer Controller in cluster
 resource "helm_release" "aws_lb_controller" {
-  name       = "aws-load-balancer-controller-${var.namespace}"
+  name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
-  version    = "1.12.0"
+  version    = "1.13.0"
 
-  namespace = var.namespace
+  namespace = "kube-system"
 
   values = [
     <<EOT

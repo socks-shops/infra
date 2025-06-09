@@ -1,3 +1,4 @@
+# Plugin AWS EBS CSI Driver pour que Kubernetes puisse créer/attacher des volumes
 resource "helm_release" "aws_ebs_csi_driver" {
   name       = "aws-ebs-csi-driver"
   namespace  = "kube-system"

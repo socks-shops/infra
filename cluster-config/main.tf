@@ -64,7 +64,6 @@ module "namespaces" {
 
 module "aws_lb_controller" {
   source       = "./modules/aws-lb-controller"
-  namespace    = var.env
   cluster_name = data.terraform_remote_state.infrastructure.outputs.cluster_name
   role_arn     = data.terraform_remote_state.infrastructure.outputs.aws_lb_controller_role_arn
 }
@@ -91,38 +90,13 @@ module "velero" {
 }
 
 
-################### OPERATORS ###################
-#################################################
-
-module "mongodb_operator" {
-  source = "./modules/mongodb-operator"
-  env    = var.env
-
-  depends_on = [module.namespaces]
-}
-
-# module "mysql_operator" {
-#   source                          = "./modules/mysql-operator"
-#   env = var.env
-#   percona_mysql_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.percona_mysql_operator_role_arn
-
-#   depends_on = [module.namespaces]
-# }
-
-# module "redis_operator" {
-#   source                  = "./modules/redis-operator"
-#   env                     = var.env
-#   redis_operator_role_arn = data.terraform_remote_state.infrastructure.outputs.redis_operator_role_arn
-
-#   depends_on = [module.namespaces]
-# }
-
 
 ################## MONITORING ###################
 #################################################
 
-# module "monitoring" {
-#   source                 = "./modules/monitoring"
-#   grafana_admin_password = var.grafana_admin_password
-#   namespace              = "monitoring"
-# }
+module "monitoring" {
+  source                 = "./modules/monitoring"
+  grafana_admin_password = var.grafana_admin_password
+  namespace              = "monitoring"
+  depends_on             = [module.namespaces]
+}

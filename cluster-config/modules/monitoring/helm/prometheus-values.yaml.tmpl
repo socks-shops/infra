@@ -2,7 +2,10 @@ grafana:
   enabled: true
   adminPassword: "${grafana_admin_password}"
   service:
-    type: LoadBalancer
+    type: ClusterIP
+  ingress:
+    enabled: false
+
   sidecar:
     dashboards:
       enabled: true

@@ -24,3 +24,8 @@ infrastructure/keypair/sockshop-keypair.pem
 .vscode/
 .idea/
 *.swp
+
+# Others
+clean-pvs.sh
+set-secrets-aws.sh
+credentials-to-set.txt

@@ -25,3 +25,10 @@ resource "kubernetes_namespace" "velero" {
     name = "velero"
   }
 }
+
+# Create "monitoring" namespace
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = "monitoring"
+  }
+}

@@ -5,7 +5,6 @@ resource "helm_release" "kube_prometheus_stack" {
   chart            = "kube-prometheus-stack"
   version          = var.chart_version
   namespace        = var.namespace
-  create_namespace = true
 
   values = [
     templatefile("${path.module}/helm/prometheus-values.yaml.tmpl", {
