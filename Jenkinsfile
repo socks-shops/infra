@@ -32,6 +32,7 @@ pipeline {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         input message: "Lancer le deploy de l'infrastructure AWS ?", ok: 'Oui'
                         sh """
+                        terraform init
                         terraform apply --auto-approve
                         """
                     }
@@ -67,6 +68,7 @@ pipeline {
                 dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         sh """
+                        terraform init
                         terraform apply --auto-approve
                         """
                     }
