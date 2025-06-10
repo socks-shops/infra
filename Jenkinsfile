@@ -29,34 +29,10 @@ pipeline {
         //     }
         // }
 
-        stage('Debug') {
-            steps {
-                script {
-                    sh "echo WORKSPACE = $WORKSPACE"
-                    sh "ls -al"
-                }
-            }
-        }
-
-        stage('Test Docker simple') {
-            agent {
-                docker {
-                    image 'alpine'
-                    args '-v $WORKSPACE:/workspace -w /workspace'
-                }
-            }
-            steps {
-                dir('.') {
-                    sh 'ls -al /workspace'
-                }
-            }
-        }
-
         stage('Infrastructure security scan - Checkov') {
             agent {
                 docker {
                     image 'socksshop/checkov:latest'
-                    args '-v $WORKSPACE:/workspace -w /workspace'
                 }
             }
             steps {
@@ -73,6 +49,9 @@ pipeline {
         }
 
         stage('Deploy infrastructure to AWS') {
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
             steps {
                 dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
