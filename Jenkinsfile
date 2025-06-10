@@ -30,6 +30,7 @@ pipeline {
             agent {
                 docker {
                     image 'socksshop/checkov:latest'
+                    args '-v $PWD:/app -w /app'
                 }
             }
             steps {
