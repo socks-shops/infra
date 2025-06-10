@@ -33,13 +33,14 @@ pipeline {
             }
             steps {
                 script {
-                    sh """
-                    checkov -d "infrastructure" \
-                            --framework terraform \
-                            --output cli \
-                            --compact
-                            --quiet || true
-                    """
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh """
+                        checkov -d "infrastructure" \
+                                --framework terraform \
+                                --output cli \
+                                --compact
+                        """
+                    }
                 }
             }
         }
@@ -90,13 +91,14 @@ pipeline {
             }
             steps {
                 script {
-                    sh """
-                    checkov -d "cluster-config" \
-                            --framework terraform \
-                            --output cli \
-                            --compact
-                            --quiet || true
-                    """
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh """
+                        checkov -d "cluster-config" \
+                                --framework terraform \
+                                --output cli \
+                                --compact
+                        """
+                    }
                 }
             }
         }
