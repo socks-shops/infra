@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'jenkins/jnlp-agent-terraform'
-            args '-v $WORKSPACE:/workspace -w /workspace'
-        }
-    }
+    agent any
     environment {
         TERRAFORM_CLUSTER_INFRA_PATH = 'infrastructure'
         TERRAFORM_CLUSTER_CONFIG_PATH = 'cluster-config'
