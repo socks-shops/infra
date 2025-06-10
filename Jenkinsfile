@@ -35,13 +35,14 @@ pipeline {
             }
             steps {
                 script {
-                    // sh """
+                    sh """
                     // checkov -d "infrastructure" \
                     //         --framework terraform \
                     //         --output cli \
                     //         --compact
                     //         --quiet || true
-                    // """
+                    echo hello
+                    """
                 }
             }
         }
