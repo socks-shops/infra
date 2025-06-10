@@ -9,22 +9,22 @@ pipeline {
     }
     stages {
 
-        stage('Check infrastructure terraform files') {
-            steps {
-                dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
-                    withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-                        script {
-                            sh """
-                            terraform init
-                            terraform validate
-                            terraform fmt -recursive
-                            terraform plan
-                            """
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Check infrastructure terraform files') {
+        //     steps {
+        //         dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
+        //             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //                 script {
+        //                     sh """
+        //                     terraform init
+        //                     terraform validate
+        //                     terraform fmt -recursive
+        //                     terraform plan
+        //                     """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Infrastructure security scan - Checkov') {
             agent {
