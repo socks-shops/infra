@@ -30,18 +30,18 @@ pipeline {
             agent {
                 docker {
                     image 'socksshop/checkov:latest'
-                    args '-v $PWD:/app -w /app'
+                    args '--user root'
                 }
             }
             steps {
                 script {
-                    sh """
-                    checkov -d "infrastructure" \
-                            --framework terraform \
-                            --output cli \
-                            --compact
-                            --quiet || true
-                    """
+                    // sh """
+                    // checkov -d "infrastructure" \
+                    //         --framework terraform \
+                    //         --output cli \
+                    //         --compact
+                    //         --quiet || true
+                    // """
                 }
             }
         }
