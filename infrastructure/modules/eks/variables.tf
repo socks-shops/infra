@@ -66,8 +66,8 @@ variable "eks_worker_node_capacity_type" {
 }
 
 variable "eks_version" {
-  default     = "1.33"
-  description = "1.33"
+  default     = "1.32"
+  description = "1.32"
 }
 
 variable "aws_region" {

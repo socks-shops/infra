@@ -26,6 +26,25 @@ pipeline {
             }
         }
 
+        stage('Infrastructure security scan - Checkov') {
+            agent {
+                docker {
+                    image 'socksshop/checkov:latest'
+                }
+            }
+            steps {
+                script {
+                    sh """
+                    checkov -d "infrastructure" \
+                            --framework terraform \
+                            --output cli \
+                            --compact
+                            --quiet || true
+                    """
+                }
+            }
+        }
+
         stage('Deploy infrastructure to AWS') {
             steps {
                 dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
@@ -56,6 +75,25 @@ pipeline {
                             """
                         }
                     }
+                }
+            }
+        }
+
+        stage('Cluster-config security scan - Checkov') {
+            agent {
+                docker {
+                    image 'socksshop/checkov:latest'
+                }
+            }
+            steps {
+                script {
+                    sh """
+                    checkov -d "cluster-config" \
+                            --framework terraform \
+                            --output cli \
+                            --compact
+                            --quiet || true
+                    """
                 }
             }
         }
