@@ -30,7 +30,7 @@ pipeline {
             agent {
                 docker {
                     image 'socksshop/checkov:latest'
-                    args '--user root'
+                    args '-w /home/jenkins/agent/workspace'
                 }
             }
             steps {
