@@ -16,7 +16,7 @@ pipeline {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         script {
                             sh """
-                            terraform init
+                            terraform init -reconfigure
                             terraform validate
                             terraform fmt -recursive
                             terraform plan
@@ -54,7 +54,7 @@ pipeline {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         input message: "Lancer le deploy de l'infrastructure AWS ?", ok: 'Oui'
                         sh """
-                        terraform init
+                        terraform init -reconfigure
                         terraform apply --auto-approve
                         """
                     }
@@ -74,7 +74,7 @@ pipeline {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         script {
                             sh """
-                            terraform init
+                            terraform init -reconfigure
                             terraform validate
                             terraform fmt -recursive
                             terraform plan
@@ -117,7 +117,7 @@ pipeline {
                 dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         sh """
-                        terraform init
+                        terraform init -reconfigure
                         terraform apply --auto-approve
                         """
                     }
