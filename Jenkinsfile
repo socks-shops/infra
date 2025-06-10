@@ -36,12 +36,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                    // checkov -d "infrastructure" \
-                    //         --framework terraform \
-                    //         --output cli \
-                    //         --compact
-                    //         --quiet || true
-                    echo hello
+                    checkov -d "infrastructure" \
+                            --framework terraform \
+                            --output cli \
+                            --compact
+                            --quiet || true
                     """
                 }
             }
