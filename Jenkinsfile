@@ -7,28 +7,29 @@ pipeline {
     }
     stages {
 
-        // stage('Check infrastructure terraform files') {
-        //     steps {
-        //         dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
-        //             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-        //                 script {
-        //                     sh """
-        //                     terraform init
-        //                     terraform validate
-        //                     terraform fmt -recursive
-        //                     terraform plan
-        //                     """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Check infrastructure terraform files') {
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
+            steps {
+                dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
+                    withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                        script {
+                            sh """
+                            terraform init
+                            terraform validate
+                            terraform fmt -recursive
+                            terraform plan
+                            """
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Infrastructure security scan - Checkov') {
             agent {
-                docker {
-                    image 'socksshop/checkov:latest'
-                }
+                docker { image 'socksshop/checkov:latest'}
             }
             steps {
                 script {
@@ -64,6 +65,9 @@ pipeline {
             environment {
                 TF_VAR_grafana_admin_password = credentials('TF_VAR_grafana_admin_password')
             }
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
             steps {
                 dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
@@ -82,9 +86,7 @@ pipeline {
 
         stage('Cluster-config security scan - Checkov') {
             agent {
-                docker {
-                    image 'socksshop/checkov:latest'
-                }
+                docker { image 'socksshop/checkov:latest' }
             }
             steps {
                 script {
@@ -122,6 +124,9 @@ pipeline {
         }
 
         stage('Destroy AWS EKS Infrastructure') {
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
             steps {
                 withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     script {
