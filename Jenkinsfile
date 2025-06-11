@@ -151,7 +151,7 @@ pipeline {
                         dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
                             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                                 sh """
-                                terraform init
+                                terraform init -reconfigure
                                 terraform destroy --auto-approve
                                 """
                             }
@@ -164,7 +164,7 @@ pipeline {
                         dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
                             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                                 sh """
-                                terraform init
+                                terraform init -reconfigure
                                 terraform destroy --auto-approve
                                 """
                             }
