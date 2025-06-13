@@ -29,7 +29,7 @@ pipeline {
 
         stage('Infrastructure security scan - Checkov') {
             agent {
-                docker { image 'bridgecrew/checkov:latest'}
+                docker { image 'socksshop/checkov:latest'}
             }
             steps {
                 script {
