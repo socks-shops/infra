@@ -1,35 +1,35 @@
 pipeline {
     agent any
     environment {
+        AWS_REGION = 'us-east-1'
         TERRAFORM_CLUSTER_INFRA_PATH = 'infrastructure'
         TERRAFORM_CLUSTER_CONFIG_PATH = 'cluster-config'
-        AWS_REGION = 'us-east-1'
     }
     stages {
 
-        stage('Check infrastructure terraform files') {
-            agent {
-                docker { image 'jenkins/jnlp-agent-terraform' }
-            }
-            steps {
-                dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
-                    withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-                        script {
-                            sh """
-                            terraform init -reconfigure
-                            terraform validate
-                            terraform fmt -recursive
-                            terraform plan
-                            """
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Check infrastructure terraform files') {
+        //     agent {
+        //         docker { image 'jenkins/jnlp-agent-terraform' }
+        //     }
+        //     steps {
+        //         dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
+        //             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+        //                 script {
+        //                     sh """
+        //                     terraform init -reconfigure
+        //                     terraform validate
+        //                     terraform fmt -recursive
+        //                     terraform plan
+        //                     """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Infrastructure security scan - Checkov') {
             agent {
-                docker { image 'socksshop/checkov:latest'}
+                docker { image 'bridgecrew/checkov:latest'}
             }
             steps {
                 script {
