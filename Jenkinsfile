@@ -45,22 +45,22 @@ pipeline {
         //     }
         // }
 
-        // stage('Deploy infrastructure to AWS') {
-        //     agent {
-        //         docker { image 'jenkins/jnlp-agent-terraform' }
-        //     }
-        //     steps {
-        //         dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
-        //             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-        //                 input message: "Lancer le deploy de l'infrastructure AWS ?", ok: 'Oui'
-        //                 sh """
-        //                 terraform init -reconfigure
-        //                 terraform apply --auto-approve
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Deploy infrastructure to AWS') {
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
+            steps {
+                dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
+                    withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                        input message: "Lancer le deploy de l'infrastructure AWS ?", ok: 'Oui'
+                        sh """
+                        terraform init -reconfigure
+                        terraform apply --auto-approve
+                        """
+                    }
+                }
+            }
+        }
 
         // stage('Check cluster configuration terraform files') {
         //     environment {
