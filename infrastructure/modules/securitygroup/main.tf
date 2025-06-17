@@ -27,6 +27,14 @@ resource "aws_security_group" "eks_sg" {
     description = "Allow all outbound traffic"
   }
 
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["169.254.169.254/32"]
+    description = "Allow access to instance metadata service (IMDS)"
+  }
+
   tags = {
     Name = "sg-eks"
   }
