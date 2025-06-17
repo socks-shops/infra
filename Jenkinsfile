@@ -125,71 +125,62 @@ pipeline {
             }
         }
 
-        stage('Destroy AWS EKS Infrastructure') {
+        stage('Post-deployment Infrastructure Management') {
             agent {
-                docker { image 'jenkins/jnlp-agent-terraform' }
+                docker {
+                    image 'jenkins/jnlp-agent-terraform'
+                }
             }
             steps {
                 withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     script {
-                        // --- Étape de confirmation unique pour toutes les destructions ---
-                        try {
-                            input(
-                                message: "ATTENTION : Voulez-vous DÉTRUIRE toute l'infrastructure (infrastructure et configuration du cluster) ? Cliquez sur 'Oui' pour détruite, sinon la pipeline s'arrêtera toute seule dans 5 minutes.",
-                                ok: 'Oui, détruire tout',
-                                timeout: 300
-                            )
-                            echo "Confirmation reçue. Lancement de la destruction des deux modules Terraform."
-                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            echo "Destruction annulée par l'utilisateur ou par timeout. Arrêt de la pipeline."
-                            currentBuild.result = 'ABORTED'
-                            error "Pipeline interrompue, destruction non lancée."
-                        }
+                        def userChoice = input(
+                            id: 'infrastructureAction',
+                            message: 'Que souhaitez-vous faire avec l\'infrastructure AWS EKS ?',
+                            parameters: [
+                                choice(
+                                    name: 'ACTION',
+                                    choices: ['Continuer (ne rien faire)', 'Détruire'],
+                                    description: 'Choisissez une action à effectuer'
+                                )
+                            ]
+                        )
 
-                        // --- Destruction de la configuration du cluster ---
-                        echo "Lancement de la destruction de la configuration du cluster (${TERRAFORM_CLUSTER_CONFIG_PATH})..."
-                        dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
-                            withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-                                sh """
-                                terraform init -reconfigure
-                                terraform destroy --auto-approve
-                                """
+                        if (userChoice == 'Détruire') {
+                            echo "Confirmation de destruction reçue. Lancement de la destruction des modules Terraform."
+
+                            // --- Destruction de la configuration du cluster ---
+                            echo "Lancement de la destruction de la configuration du cluster (${TERRAFORM_CLUSTER_CONFIG_PATH})..."
+                            dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
+                                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                                    sh """
+                                    terraform init -reconfigure
+                                    terraform destroy --auto-approve
+                                    """
+                                }
                             }
-                        }
-                        echo "Configuration du cluster détruite."
+                            echo "Configuration du cluster détruite."
 
-
-                        // --- Destruction de l'infrastructure de base ---
-                        echo "Lancement de la destruction de l'infrastructure de base (${TERRAFORM_CLUSTER_INFRA_PATH})..."
-                        dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
-                            withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-                                sh """
-                                terraform init -reconfigure
-                                terraform destroy --auto-approve
-                                """
+                            // --- Destruction de l'infrastructure de base ---
+                            echo "Lancement de la destruction de l'infrastructure de base (${TERRAFORM_CLUSTER_INFRA_PATH})..."
+                            dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
+                                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                                    sh """
+                                    terraform init -reconfigure
+                                    terraform destroy --auto-approve
+                                    """
+                                }
                             }
+                            echo "Infrastructure de base détruite."
+
+                        } else { // userChoice == 'Continuer (ne rien faire)'
+                            echo "Pas de destruction de l'infrastructure."
                         }
-                        echo "Infrastructure de base détruite."
                     }
                 }
             }
         }
 
-    }
-
-    post {
-        always {
-            echo "Pipeline terminée."
-        }
-        success {
-            echo "Opérations de destruction terminées avec succès."
-        }
-        failure {
-            echo "Les opérations de destruction ont échoué à un moment donné."
-        }
-        aborted {
-            echo "Pipeline annulée avant la destruction complète."
-        }
     }
 
 }
