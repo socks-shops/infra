@@ -86,7 +86,7 @@ module "velero" {
   region                    = data.terraform_remote_state.infrastructure.outputs.region
   velero_role_arn           = data.terraform_remote_state.infrastructure.outputs.velero_role_arn
   cluster_name              = data.terraform_remote_state.infrastructure.outputs.cluster_name
-  depends_on = [module.namespaces]
+  depends_on = [module.namespaces, module.aws_lb_controller]
 }
 
 
@@ -98,5 +98,5 @@ module "monitoring" {
   source                 = "./modules/monitoring"
   grafana_admin_password = var.grafana_admin_password
   namespace              = "monitoring"
-  depends_on             = [module.namespaces]
+  depends_on             = [module.namespaces, module.aws_lb_controller]
 }

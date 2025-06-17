@@ -1,15 +1,4 @@
-# # Create Service Account Velero
-# resource "kubernetes_service_account" "velero" {
-#   metadata {
-#     name      = "velero"
-#     namespace = "velero"
-#     annotations = {
-#       "eks.amazonaws.com/role-arn" = var.velero_role_arn
-#     }
-#   }
-# }
-
-# Conecte to the cluster the Velero CRDs local-exec
+# Connecte to the cluster the Velero CRDs local-exec
 resource "null_resource" "update_kubeconfig" {
   provisioner "local-exec" {
     command = "aws eks --region ${var.region} update-kubeconfig --name ${var.cluster_name}"
