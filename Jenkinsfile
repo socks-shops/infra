@@ -54,7 +54,7 @@ pipeline {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         input message: "Lancer le deploy de l'infrastructure AWS ?", ok: 'Oui'
                         sh """
-                        terraform init -reconfigure
+                        terraform init -upgrade
                         terraform apply --auto-approve
                         """
                     }
