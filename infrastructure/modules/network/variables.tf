@@ -20,19 +20,19 @@ variable "az1_pub_subnet_cidr" {
 }
 
 variable "az2_pub_subnet_cidr" {
-  default     = "10.0.0.0/24"
+  default     = "10.0.1.0/24"
   type        = string
   description = "CIDR range of public subnet in the second availability zone "
 }
 
 variable "az1_priv_subnet_cidr" {
-  default     = "10.0.1.0/24"
+  default     = "10.0.2.0/24"
   type        = string
   description = "CIDR range of private subnet in the first availability zone "
 }
 
 variable "az2_priv_subnet_cidr" {
-  default     = "10.0.2.0/24"
+  default     = "10.0.3.0/24"
   type        = string
   description = "CIDR range of private subnet in the second availability zone "
 }

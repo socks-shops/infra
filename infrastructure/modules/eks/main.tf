@@ -133,6 +133,23 @@ resource "aws_iam_instance_profile" "worker" {
 
 
 #################################################
+############## OIDC CONFIGURATION ###############
+#################################################
+
+# Create OIDC provider
+resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
+  url = aws_eks_cluster.sockshop-eks.identity[0].oidc[0].issuer
+
+  client_id_list = ["sts.amazonaws.com"]
+
+  thumbprint_list = [
+    "9e99a64e2498cfa1988b8f2e8a9c647c4f5c02d3"
+  ]
+}
+
+
+
+#################################################
 ######### IAM ROLE : AWS LB CONTROLLER ##########
 #################################################
 
@@ -160,17 +177,6 @@ resource "aws_iam_role" "aws_lb_controller" {
 
   depends_on = [aws_iam_openid_connect_provider.eks_oidc_provider, aws_eks_node_group.node-grp,
     aws_eks_cluster.sockshop-eks
-  ]
-}
-
-# Create OIDC provider
-resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
-  url = aws_eks_cluster.sockshop-eks.identity[0].oidc[0].issuer
-
-  client_id_list = ["sts.amazonaws.com"]
-
-  thumbprint_list = [
-    "9e99a64e2498cfa1988b8f2e8a9c647c4f5c02d3"
   ]
 }
 
@@ -229,12 +235,12 @@ resource "aws_eks_node_group" "node-grp" {
   subnet_ids      = var.subnet_ids
   capacity_type   = var.eks_worker_node_capacity_type
   # disk_size       = 20
-  # instance_types  = var.eks_worker_node_instance_type
+  instance_types  = var.eks_worker_node_instance_type
 
-  remote_access {
-    ec2_ssh_key               = var.eks_key_pair
-    source_security_group_ids = [var.eks_sg]
-  }
+  # remote_access {
+  #   ec2_ssh_key               = var.eks_key_pair
+  #   source_security_group_ids = [var.eks_sg]
+  # }
 
   scaling_config {
     desired_size = var.eks_desired_worker_node
@@ -248,7 +254,7 @@ resource "aws_eks_node_group" "node-grp" {
 
   launch_template {
     name    = aws_launch_template.eks_node_launch_template.name
-    version = "$$Latest$$" # Toujours utiliser la dernière version du launch template
+    version = "$Latest"
   }
 
   depends_on = [
@@ -278,13 +284,12 @@ data "aws_ami" "eks_optimized" {
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-lt-${var.cluster_name}-"
   image_id      = data.aws_ami.eks_optimized.id
-  instance_type = var.eks_worker_node_instance_type
+  # instance_type = var.eks_worker_node_instance_type
   key_name      = var.eks_key_pair
 
   # Attacher les Security Groups ici : votre SG personnalisé ET le SG du cluster EKS
   vpc_security_group_ids = [
-    aws_security_group.eks_sg.id, # Votre SG pour l'accès SSH et la règle IMDS
-    aws_eks_cluster.sockshop-eks.vpc_config[0].cluster_security_group_id # Le SG EKS géré par AWS
+    var.eks_sg, # Votre SG pour l'accès SSH et la règle IMDS
   ]
 
   # Configuration IMDSv2 : C'EST ICI QU'IL DOIT ÊTRE !
@@ -297,17 +302,13 @@ resource "aws_launch_template" "eks_node_launch_template" {
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
-      volume_size = var.disk_size
+      volume_size = 20
       volume_type = "gp2"
     }
   }
 
-  # Profil d'instance IAM (pour les permissions des nœuds)
-  iam_instance_profile {
-    arn = aws_iam_instance_profile.worker.arn
-  }
-
   tags = {
     Name = "${var.cluster_name}-node-template"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
