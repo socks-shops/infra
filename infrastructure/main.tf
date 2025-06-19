@@ -1,12 +1,4 @@
 terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-  required_version = ">= 1.0"
-
   backend "s3" {
     bucket = "sockshop-tfstate-1234"
     key    = "infrastructure/sockshop.tfstate"
@@ -42,7 +34,7 @@ module "network" {
 
 module "eks" {
   source                        = "./modules/eks"
-  subnet_ids                    = module.network.public_subnet_ids
+  subnet_ids                    = module.network.private_subnet_ids
   cluster_name                  = var.cluster_name
   eks_node_group_name           = "node_group_sockshop"
   iam_role_name                 = "iam_role_sockshop"
@@ -63,11 +55,9 @@ module "eks" {
 
 module "securitygroup" {
   source   = "./modules/securitygroup"
-  cluster_name = var.cluster_name
   vpc_id   = module.network.vpc_id
   vpc_cidr = var.vpc_cidr
   cidr_all = var.cidr_all
-  eks_cluster_security_group_id = module.eks.eks_cluster_security_group_id
 }
 
 module "velero" {

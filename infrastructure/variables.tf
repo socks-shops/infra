@@ -43,7 +43,7 @@ variable "worker_node_capacity_type" {
 }
 
 variable "eks_version" {
-  default = "1.29"
+  default = "1.32"
 }
 
 variable "eks_key_pair" {

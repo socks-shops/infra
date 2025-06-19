@@ -2,8 +2,3 @@ output "eks_sg_id" {
   description = "The ID of the EKS security group"
   value       = aws_security_group.eks_sg.id
 }
-
-# output "alb_sg_id" {
-#   description = "The ID of the ALB security group"
-#   value       = aws_security_group.sg_alb.id
-# }

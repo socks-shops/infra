@@ -234,13 +234,13 @@ resource "aws_eks_node_group" "node-grp" {
   node_role_arn   = aws_iam_role.worker.arn
   subnet_ids      = var.subnet_ids
   capacity_type   = var.eks_worker_node_capacity_type
-  # disk_size       = 20
+  disk_size       = 20
   instance_types  = var.eks_worker_node_instance_type
 
-  # remote_access {
-  #   ec2_ssh_key               = var.eks_key_pair
-  #   source_security_group_ids = [var.eks_sg]
-  # }
+  remote_access {
+    ec2_ssh_key               = var.eks_key_pair
+    source_security_group_ids = [var.eks_sg]
+  }
 
   scaling_config {
     desired_size = var.eks_desired_worker_node
@@ -252,63 +252,9 @@ resource "aws_eks_node_group" "node-grp" {
     max_unavailable = 1
   }
 
-  launch_template {
-    name    = aws_launch_template.eks_node_launch_template.name
-    version = "$Latest"
-  }
-
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
-    aws_launch_template.eks_node_launch_template,
+    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly
   ]
-}
-
-
-data "aws_ami" "eks_optimized" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${var.eks_version}-v*"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-
-resource "aws_launch_template" "eks_node_launch_template" {
-  name_prefix   = "eks-node-lt-${var.cluster_name}-"
-  image_id      = data.aws_ami.eks_optimized.id
-  # instance_type = var.eks_worker_node_instance_type
-  key_name      = var.eks_key_pair
-
-  # Attacher les Security Groups ici : votre SG personnalisé ET le SG du cluster EKS
-  vpc_security_group_ids = [
-    var.eks_sg, # Votre SG pour l'accès SSH et la règle IMDS
-  ]
-
-  # Configuration IMDSv2 : C'EST ICI QU'IL DOIT ÊTRE !
-  metadata_options {
-    http_tokens                 = "required"
-    http_put_response_hop_limit = 2
-  }
-
-  # Configuration du disque
-  block_device_mappings {
-    device_name = "/dev/xvda"
-    ebs {
-      volume_size = 20
-      volume_type = "gp2"
-    }
-  }
-
-  tags = {
-    Name = "${var.cluster_name}-node-template"
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-  }
 }

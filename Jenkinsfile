@@ -7,43 +7,43 @@ pipeline {
     }
     stages {
 
-        // stage('Check infrastructure terraform files') {
-        //     agent {
-        //         docker { image 'jenkins/jnlp-agent-terraform' }
-        //     }
-        //     steps {
-        //         dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
-        //             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-        //                 script {
-        //                     sh """
-        //                     terraform init -reconfigure
-        //                     terraform validate
-        //                     terraform fmt -recursive
-        //                     terraform plan
-        //                     """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Check infrastructure terraform files') {
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
+            steps {
+                dir("${TERRAFORM_CLUSTER_INFRA_PATH}") {
+                    withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                        script {
+                            sh """
+                            terraform init -reconfigure
+                            terraform validate
+                            terraform fmt -recursive
+                            terraform plan
+                            """
+                        }
+                    }
+                }
+            }
+        }
 
-        // stage('Infrastructure security scan - Checkov') {
-        //     agent {
-        //         docker { image 'socksshop/checkov:latest'}
-        //     }
-        //     steps {
-        //         script {
-        //             catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-        //                 sh """
-        //                 checkov -d "infrastructure" \
-        //                         --framework terraform \
-        //                         --output cli \
-        //                         --compact
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Infrastructure security scan - Checkov') {
+            agent {
+                docker { image 'socksshop/checkov:latest'}
+            }
+            steps {
+                script {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh """
+                        checkov -d "infrastructure" \
+                                --framework terraform \
+                                --output cli \
+                                --compact
+                        """
+                    }
+                }
+            }
+        }
 
         stage('Deploy infrastructure to AWS') {
             agent {
@@ -62,46 +62,46 @@ pipeline {
             }
         }
 
-        // stage('Check cluster configuration terraform files') {
-        //     environment {
-        //         TF_VAR_grafana_admin_password = credentials('TF_VAR_grafana_admin_password')
-        //     }
-        //     agent {
-        //         docker { image 'jenkins/jnlp-agent-terraform' }
-        //     }
-        //     steps {
-        //         dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
-        //             withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-        //                 script {
-        //                     sh """
-        //                     terraform init -reconfigure
-        //                     terraform validate
-        //                     terraform fmt -recursive
-        //                     terraform plan
-        //                     """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Check cluster configuration terraform files') {
+            environment {
+                TF_VAR_grafana_admin_password = credentials('TF_VAR_grafana_admin_password')
+            }
+            agent {
+                docker { image 'jenkins/jnlp-agent-terraform' }
+            }
+            steps {
+                dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
+                    withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                        script {
+                            sh """
+                            terraform init -reconfigure
+                            terraform validate
+                            terraform fmt -recursive
+                            terraform plan
+                            """
+                        }
+                    }
+                }
+            }
+        }
 
-        // stage('Cluster-config security scan - Checkov') {
-        //     agent {
-        //         docker { image 'socksshop/checkov:latest' }
-        //     }
-        //     steps {
-        //         script {
-        //             catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-        //                 sh """
-        //                 checkov -d "cluster-config" \
-        //                         --framework terraform \
-        //                         --output cli \
-        //                         --compact
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Cluster-config security scan - Checkov') {
+            agent {
+                docker { image 'socksshop/checkov:latest' }
+            }
+            steps {
+                script {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh """
+                        checkov -d "cluster-config" \
+                                --framework terraform \
+                                --output cli \
+                                --compact
+                        """
+                    }
+                }
+            }
+        }
 
         stage('Deploy AWS EKS cluster configuration to AWS') {
             agent {
