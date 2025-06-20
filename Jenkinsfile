@@ -67,7 +67,10 @@ pipeline {
                 TF_VAR_grafana_admin_password = credentials('TF_VAR_grafana_admin_password')
             }
             agent {
-                docker { image 'socksshop/aws-cli-terraform-helm:latest' }
+                docker {
+                    image 'socksshop/aws-cli-terraform-helm:latest'
+                    args '-u root -v $HOME/.kube:/root/.kube'
+                }
             }
             steps {
                 dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
