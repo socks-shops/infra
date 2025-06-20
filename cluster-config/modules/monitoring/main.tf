@@ -1,10 +1,10 @@
 # Install Kube-prometheus-stack
 resource "helm_release" "kube_prometheus_stack" {
-  name             = "kube-prometheus-stack"
-  repository       = "https://prometheus-community.github.io/helm-charts"
-  chart            = "kube-prometheus-stack"
-  version          = var.chart_version
-  namespace        = var.namespace
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = var.chart_version
+  namespace  = var.namespace
 
   values = [
     templatefile("${path.module}/helm/prometheus-values.yaml.tmpl", {
