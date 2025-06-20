@@ -25,3 +25,8 @@ output "cluster_token" {
   value     = data.aws_eks_cluster_auth.cluster.token
   sensitive = true
 }
+
+output "eks_cluster_security_group_id" {
+  description = "The security group ID of the EKS cluster control plane."
+  value       = aws_eks_cluster.sockshop-eks.vpc_config[0].cluster_security_group_id
+}

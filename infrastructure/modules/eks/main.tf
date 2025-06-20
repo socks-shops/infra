@@ -136,14 +136,17 @@ resource "aws_iam_instance_profile" "worker" {
 ############## OIDC CONFIGURATION ###############
 #################################################
 
+# Récupération du certificat TLS du fournisseur OIDC EKS Get tls certificate
+data "tls_certificate" "eks_oidc" {
+  url = aws_eks_cluster.sockshop-eks.identity[0].oidc[0].issuer
+}
+
 # Create OIDC provider
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url = aws_eks_cluster.sockshop-eks.identity[0].oidc[0].issuer
-
   client_id_list = ["sts.amazonaws.com"]
-
   thumbprint_list = [
-    "9e99a64e2498cfa1988b8f2e8a9c647c4f5c02d3"
+    data.tls_certificate.eks_oidc.certificates[0].sha1_fingerprint
   ]
 }
 

@@ -4,8 +4,8 @@ variable "subnet_ids" {
 }
 
 variable "cluster_name" {
-  default     = "sockshop-EKS"
-  description = "sockshop-EKS"
+  default     = "sockshop-eks"
+  description = "sockshop-eks"
 }
 
 variable "eks_node_group_name" {

@@ -20,7 +20,7 @@ variable "iam_role_name" {
 
 variable "cluster_name" {
   description = "Nom du cluster EKS"
-  default     = "sockshop-EKS"
+  default     = "sockshop-eks"
 }
 
 

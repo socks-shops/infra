@@ -3,6 +3,9 @@ output "region" {
   value       = var.region
 }
 
+output "vpc_id" {
+  value = module.network.vpc_id
+}
 
 ################## EKS CLUSTER ##################
 #################################################
@@ -27,10 +30,6 @@ output "cluster_name" {
 output "aws_lb_controller_role_arn" {
   value       = module.eks.aws_lb_controller_role_arn
   description = "ARN du rôle IAM pour le AWS Load Balancer Controller"
-}
-
-output "vpc_id" {
-  value = module.network.vpc_id
 }
 
 output "OIDC" {

@@ -20,10 +20,17 @@ resource "helm_release" "aws_lb_controller" {
 
   values = [
     <<EOT
-    clusterName: ${var.cluster_name}
+    region: ${var.region}
+    vpcId: ${var.vpc_id}
+
+    image:
+      repository: 602401143452.dkr.ecr.${var.region}.amazonaws.com/amazon/aws-load-balancer-controller # Ajoutez cette ligne
+
     serviceAccount:
       create: false
       name: aws-load-balancer-controller
+
+    clusterName: ${var.cluster_name}
     EOT
   ]
 

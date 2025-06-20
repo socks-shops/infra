@@ -55,9 +55,11 @@ module "eks" {
 
 module "securitygroup" {
   source   = "./modules/securitygroup"
+  cluster_name = var.cluster_name
   vpc_id   = module.network.vpc_id
   vpc_cidr = var.vpc_cidr
   cidr_all = var.cidr_all
+  eks_cluster_security_group_id = module.eks.eks_cluster_security_group_id
 }
 
 module "velero" {

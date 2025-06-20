@@ -41,7 +41,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = data.terraform_remote_state.infrastructure.outputs.cluster_endpoint
     cluster_ca_certificate = base64decode(data.terraform_remote_state.infrastructure.outputs.cluster_ca)
     token                  = data.aws_eks_cluster_auth.auth.token
@@ -64,6 +64,8 @@ module "namespaces" {
 
 module "aws_lb_controller" {
   source       = "./modules/aws-lb-controller"
+  region       = data.terraform_remote_state.infrastructure.outputs.region
+  vpc_id       = data.terraform_remote_state.infrastructure.outputs.vpc_id
   cluster_name = data.terraform_remote_state.infrastructure.outputs.cluster_name
   role_arn     = data.terraform_remote_state.infrastructure.outputs.aws_lb_controller_role_arn
 }
