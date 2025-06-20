@@ -67,13 +67,17 @@ pipeline {
                 TF_VAR_grafana_admin_password = credentials('TF_VAR_grafana_admin_password')
             }
             agent {
-                docker { image 'jenkins/jnlp-agent-terraform' }
+                docker { image 'socksshop/aws-cli-terraform-helm:latest' }
             }
             steps {
                 dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         script {
                             sh """
+                            helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+                            helm repo add eks https://aws.github.io/eks-charts
+                            helm repo update
+
                             terraform init -reconfigure
                             terraform validate
                             terraform fmt -recursive
@@ -106,7 +110,7 @@ pipeline {
         stage('Deploy AWS EKS cluster configuration to AWS') {
             agent {
                 docker {
-                    image 'socksshop/aws-cli-terraform-curl-kubectl-velero:latest'
+                    image 'socksshop/aws-cli-terraform-curl-kubectl-helm-velero:latest'
                     args '-u root -v $HOME/.kube:/root/.kube'
                 }
             }
@@ -117,6 +121,10 @@ pipeline {
                 dir("${TERRAFORM_CLUSTER_CONFIG_PATH}") {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         sh """
+                        helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+                        helm repo add eks https://aws.github.io/eks-charts
+                        helm repo update
+
                         terraform init -reconfigure
                         terraform apply --auto-approve
                         """
