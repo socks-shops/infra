@@ -76,6 +76,7 @@ module "aws_lb_controller" {
 
 module "aws_ebs_csi_driver" {
   source = "./modules/aws-ebs-csi-driver"
+  ebs_csi_driver_role_arn = data.terraform_remote_state.infrastructure.outputs.ebs_csi_driver_role_arn
 }
 
 

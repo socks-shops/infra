@@ -37,6 +37,15 @@ output "OIDC" {
 }
 
 
+############## AWS-EBS-CSI-DRIVER ###############
+#################################################
+
+output "ebs_csi_driver_role_arn" {
+  description = "ARN of the IAM role for the AWS EBS CSI Driver, exposed from infra root module"
+  value       = module.aws-ebs-csi-driver.ebs_csi_driver_role_arn
+}
+
+
 #################### VELERO #####################
 #################################################
 

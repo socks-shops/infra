@@ -62,6 +62,13 @@ module "securitygroup" {
   eks_cluster_security_group_id = module.eks.eks_cluster_security_group_id
 }
 
+module "aws-ebs-csi-driver" {
+  source = "./modules/aws-ebs-csi-driver"
+  cluster_name = var.cluster_name
+  account_id = var.aws_account_id
+  oidc_provider = module.eks.oidc_provider_arn
+}
+
 module "velero" {
   source                    = "./modules/velero"
   cluster_name              = module.eks.cluster_name
